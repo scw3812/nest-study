@@ -10,7 +10,7 @@ import { ReadOnlyCatDto } from './dto/cat.dto';
 export class CatsController {
   constructor(private readonly castsService: CatsService) {}
 
-  @ApiOperation({ summary: '현재 고양이 데이터 가져오기' })
+  @ApiOperation({ summary: '현재 고양이 데이터 가져오기', tags: ['cats'] })
   @Get()
   getCurrentCat() {
     return 'current cat';
@@ -25,7 +25,7 @@ export class CatsController {
     description: '성공',
     type: ReadOnlyCatDto,
   })
-  @ApiOperation({ summary: '회원가입' })
+  @ApiOperation({ summary: '회원가입', tags: ['cats'] })
   @Post()
   async signUp(@Body() body: CatRequestDto) {
     return await this.castsService.signUp(body);
