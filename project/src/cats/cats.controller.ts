@@ -14,9 +14,9 @@ import { ReadOnlyCatDto } from './dto/cat.dto';
 import { AuthService } from '../auth/auth.service';
 import { LoginRequestDto } from '../auth/dto/login.request.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
-import { Request } from 'express';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { Cat } from './cats.schema';
+import { LoginResponseDto } from 'src/auth/dto/login.response.dto';
 
 @Controller('cats')
 @UseInterceptors(SuccessInterceptor)
@@ -48,6 +48,20 @@ export class CatsController {
     return await this.castsService.signUp(body);
   }
 
+  @ApiResponse({
+    status: 500,
+    description: 'Server Error',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Auth Error',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '성공',
+    type: LoginResponseDto,
+  })
+  @ApiOperation({ summary: '로그인', tags: ['cats'] })
   @Post('login')
   async login(@Body() data: LoginRequestDto) {
     return await this.authService.jwtLogin(data);

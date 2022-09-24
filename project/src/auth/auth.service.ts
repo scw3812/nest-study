@@ -3,6 +3,7 @@ import { CatsRepository } from '../cats/cats.repository';
 import { LoginRequestDto } from './dto/login.request.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LoginResponseDto } from './dto/login.response.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async jwtLogin(data: LoginRequestDto): Promise<{ token: string }> {
+  async jwtLogin(data: LoginRequestDto): Promise<LoginResponseDto> {
     const { email, password } = data;
     const cat = await this.catsRepository.findCatByEmail(email);
 
