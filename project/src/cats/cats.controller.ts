@@ -43,8 +43,8 @@ export class CatsController {
   })
   @ApiOperation({ summary: '회원가입', tags: ['cats'] })
   @Post()
-  async signUp(@Body() body: CatRequestDto) {
-    return await this.catsService.signUp(body);
+  signUp(@Body() body: CatRequestDto) {
+    return this.catsService.signUp(body);
   }
 
   @ApiResponse({
@@ -58,8 +58,8 @@ export class CatsController {
   })
   @ApiOperation({ summary: '로그인', tags: ['cats'] })
   @Post('login')
-  async login(@Body() data: LoginRequestDto) {
-    return await this.authService.jwtLogin(data);
+  login(@Body() data: LoginRequestDto) {
+    return this.authService.jwtLogin(data);
   }
 
   @ApiResponse({
@@ -70,10 +70,16 @@ export class CatsController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('image', 10, multerOptions('cats')))
   @Post('upload')
-  async uploadCatImg(
+  uploadCatImg(
     @CurrentUser() cat: Cat,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
     return this.catsService.uploadImg(cat, files);
+  }
+
+  @ApiOperation({ summary: '모든 고양이 데이터 가져오기', tags: ['cats'] })
+  @Get('all')
+  getAllCat() {
+    return this.catsService.getAllCat();
   }
 }
