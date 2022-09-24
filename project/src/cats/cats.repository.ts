@@ -30,4 +30,11 @@ export class CatsRepository {
     const result = await this.catModel.findById(id).select('-password');
     return result;
   }
+
+  async findByIdAndUpdateImg(id: string, fileName: string) {
+    const cat = await this.catModel.findById(id);
+    cat.imgUrl = `http://localhost:8000/media/${fileName}`;
+    const newCat = await cat.save();
+    return newCat.readOnlyData;
+  }
 }

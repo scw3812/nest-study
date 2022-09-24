@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,12 +18,14 @@ import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { Cat } from './cats.schema';
 import { LoginResponseDto } from 'src/auth/dto/login.response.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/common/utils/multer.options';
 
 @Controller('cats')
 @UseInterceptors(SuccessInterceptor)
 export class CatsController {
   constructor(
-    private readonly castsService: CatsService,
+    private readonly catsService: CatsService,
     private readonly authService: AuthService,
   ) {}
 
@@ -34,10 +37,6 @@ export class CatsController {
   }
 
   @ApiResponse({
-    status: 500,
-    description: 'Server Error',
-  })
-  @ApiResponse({
     status: 200,
     description: '성공',
     type: ReadOnlyCatDto,
@@ -45,13 +44,9 @@ export class CatsController {
   @ApiOperation({ summary: '회원가입', tags: ['cats'] })
   @Post()
   async signUp(@Body() body: CatRequestDto) {
-    return await this.castsService.signUp(body);
+    return await this.catsService.signUp(body);
   }
 
-  @ApiResponse({
-    status: 500,
-    description: 'Server Error',
-  })
   @ApiResponse({
     status: 401,
     description: 'Auth Error',
@@ -65,5 +60,20 @@ export class CatsController {
   @Post('login')
   async login(@Body() data: LoginRequestDto) {
     return await this.authService.jwtLogin(data);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: '성공',
+  })
+  @ApiOperation({ summary: '고양이 이미지 업로드', tags: ['cats'] })
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FilesInterceptor('image', 10, multerOptions('cats')))
+  @Post('upload')
+  async uploadCatImg(
+    @CurrentUser() cat: Cat,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    return this.catsService.uploadImg(cat, files);
   }
 }
