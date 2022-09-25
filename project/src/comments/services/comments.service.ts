@@ -3,11 +3,7 @@ import { CommentsCreateDto } from '../dto/comments.dto';
 
 @Injectable()
 export class CommentsService {
-  async getAllComments() {
-    
-  }
+  async getAllComments() {}
 
-  async createComment(id: string, comments: CommentsCreateDto) {
-    
-  }
+  async createComment(id: string, comments: CommentsCreateDto) {}
 }
